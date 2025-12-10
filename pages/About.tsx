@@ -40,12 +40,24 @@ const About: React.FC = () => {
           {/* Founder's Quote */}
           <div className="bg-slate-900 text-white rounded-3xl p-12 text-center relative overflow-hidden mb-24">
              <div className="relative z-10 max-w-3xl mx-auto">
+                <div className="w-40 h-40 mx-auto mb-8 rounded-full overflow-hidden border-4 border-white shadow-xl">
+                   <img 
+                      src="/images/Ceo of divina.jpg" 
+                      alt="Amy Hubbard" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80';
+                      }}
+                   />
+                </div>
                 <p className="text-2xl md:text-3xl font-serif italic leading-relaxed mb-8 opacity-90">
                    "Healthcare is not a privilege, but a fundamental right. At Divina, we strive every day to make that right a reality through technology and empathy."
                 </p>
                 <div>
-                   <p className="font-bold text-lg">Dr. Elena Rossi</p>
-                   <p className="text-primary-400">Founder & CEO</p>
+                   <p className="font-bold text-xl">Amy Hubbard</p>
+                   <p className="text-primary-300 font-medium mt-1">Founder & CEO</p>
                 </div>
              </div>
           </div>

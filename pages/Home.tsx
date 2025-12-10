@@ -1,13 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Microscope, ShieldCheck, Globe, MonitorSmartphone, Activity, Users, Database, TestTube, Crown, Shield, FileText, CreditCard, Phone, Mail, MapPin, Plus, Minus, Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import { SERVICES, FAQS } from '../constants';
+
 
 const Home: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{success: boolean; message: string} | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
+  };
+
+  const sendEmail = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    if (!formRef.current) return;
+    
+    // Add timestamp to form data
+    const form = e.target as HTMLFormElement;
+    const timestampInput = document.createElement('input');
+    timestampInput.type = 'hidden';
+    timestampInput.name = 'timestamp';
+    timestampInput.value = new Date().toISOString();
+    form.appendChild(timestampInput);
+    
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    
+    try {
+      await emailjs.sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+      
+      setSubmitStatus({
+        success: true,
+        message: 'Message sent successfully! We\'ll get back to you soon.'
+      });
+      formRef.current.reset();
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setSubmitStatus({
+        success: false,
+        message: 'Failed to send message. Please try again later.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const iconMap: any = {
@@ -27,7 +72,7 @@ const Home: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="fade-in">
               <span className="inline-block bg-white text-primary-700 font-semibold px-4 py-1.5 rounded-full shadow-sm text-sm mb-6 border border-primary-100">
-                New 2026 Safety Standards Compliant
+                New 2025 Safety Standards Compliant
               </span>
               <h1 className="text-4xl lg:text-6xl font-black text-slate-900 leading-tight mb-6">
                 Empowering Your <br />
@@ -143,11 +188,23 @@ const Home: React.FC = () => {
           {/* Founder's Quote */}
           <div className="bg-slate-900 text-white rounded-3xl p-12 text-center relative overflow-hidden mb-24">
              <div className="relative z-10 max-w-3xl mx-auto">
+                <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                   <img 
+                      src="/images/Ceo of divina.jpg" 
+                      alt="Amy Hubbard" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80';
+                      }}
+                   />
+                </div>
                 <p className="text-2xl md:text-3xl font-serif italic leading-relaxed mb-8 opacity-90">
                    "Healthcare is not a privilege, but a fundamental right. At Divina, we strive every day to make that right a reality through technology and empathy."
                 </p>
                 <div>
-                   <p className="font-bold text-lg">Dr. Elena Rossi</p>
+                   <p className="font-bold text-lg">Amy Hubbard</p>
                    <p className="text-primary-400">Founder & CEO</p>
                 </div>
              </div>
@@ -275,30 +332,72 @@ const Home: React.FC = () => {
             {/* Contact Form */}
             <div className="bg-white p-8 rounded-3xl shadow-lg h-fit">
               <h3 className="text-2xl font-bold text-slate-900 mb-6">Send us a message</h3>
-              <form className="space-y-6">
+              {submitStatus && (
+                <div className={`p-4 mb-6 rounded-lg ${submitStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                  {submitStatus.message}
+                </div>
+              )}
+              <form ref={formRef} onSubmit={sendEmail} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
-                  <input type="text" className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition" placeholder="John Smith" />
+                  <label htmlFor="home_user_name" className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+                  <input 
+                    type="text" 
+                    id="home_user_name"
+                    name="name" 
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition" 
+                    placeholder="John Smith" 
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
-                  <input type="email" className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition" placeholder="john@company.com" />
+                  <label htmlFor="home_user_email" className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                  <input 
+                    type="email" 
+                    id="home_user_email"
+                    name="email" 
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition" 
+                    placeholder="john@company.com" 
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Subject</label>
-                  <select className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition bg-white">
-                    <option>General Inquiry</option>
-                    <option>Product Support</option>
-                    <option>Sales / Bulk Order</option>
-                    <option>Careers</option>
+                  <label htmlFor="home_subject" className="block text-sm font-medium text-slate-700 mb-2">Subject</label>
+                  <select 
+                    id="home_subject"
+                    name="subject" 
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition bg-white"
+                    required
+                  >
+                    <option value="">Select a subject</option>
+                    <option value="General Inquiry">General Inquiry</option>
+                    <option value="Product Support">Product Support</option>
+                    <option value="Sales / Bulk Order">Sales / Bulk Order</option>
+                    <option value="Careers">Careers</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Message</label>
-                  <textarea rows={5} className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition" placeholder="How can we help you?"></textarea>
+                  <label htmlFor="home_message" className="block text-sm font-medium text-slate-700 mb-2">Message</label>
+                  <textarea 
+                    id="home_message"
+                    name="message" 
+                    rows={5} 
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition" 
+                    placeholder="How can we help you?"
+                    required
+                  ></textarea>
                 </div>
-                <button type="button" className="w-full bg-primary-600 text-white font-bold py-4 rounded-xl hover:bg-primary-700 transition flex items-center justify-center shadow-lg shadow-primary-500/20">
-                  <Send className="w-5 h-5 mr-2" /> Send Message
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className={`w-full ${isSubmitting ? 'bg-primary-400' : 'bg-primary-600 hover:bg-primary-700'} text-white font-bold py-4 rounded-xl transition flex items-center justify-center shadow-lg shadow-primary-500/20`}
+                >
+                  {isSubmitting ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5 mr-2" /> Send Message
+                    </>
+                  )}
                 </button>
               </form>
             </div>

@@ -1,4 +1,6 @@
 import { Product, Job, Service, FaqItem } from './types';
+import hemo from './images/hemo.jpg';
+import pen from './images/pen.jpg';
 
 export const PRODUCTS: Product[] = [
   {
@@ -13,7 +15,7 @@ export const PRODUCTS: Product[] = [
       'Sterility': 'Gamma Irradiation',
       'Packaging': '100 count / box'
     },
-    imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80'
+    imageUrl: hemo
   },
   {
     id: 'p2',
@@ -27,22 +29,22 @@ export const PRODUCTS: Product[] = [
       'Compatibility': 'Universal ISO Standard',
       'Material': 'Stainless Steel'
     },
-    imageUrl: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&w=800&q=80'
+    imageUrl: pen
   },
-  {
-    id: 'p3',
-    name: 'ShieldGuard™ Safety Tips',
-    category: 'Diabetes Care',
-    description: 'Automated needle shielding to protect healthcare workers and patients from accidental sticks.',
-    features: ['Auto-Lock Shield', 'Red Indicator', 'Low Injection Force', 'Safe for Kids'],
-    specs: {
-      'Safety Mechanism': 'Passive Dual Shield',
-      'Gauge': '31G, 32G',
-      'Usage': 'Single Use',
-      'Certification': 'FDA & CE'
-    },
-    imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80'
-  }
+  // {
+  //   id: 'p3',
+  //   name: 'ShieldGuard™ Safety Tips',
+  //   category: 'Diabetes Care',
+  //   description: 'Automated needle shielding to protect healthcare workers and patients from accidental sticks.',
+  //   features: ['Auto-Lock Shield', 'Red Indicator', 'Low Injection Force', 'Safe for Kids'],
+  //   specs: {
+  //     'Safety Mechanism': 'Passive Dual Shield',
+  //     'Gauge': '31G, 32G',
+  //     'Usage': 'Single Use',
+  //     'Certification': 'FDA & CE'
+  //   },
+  //   imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80'
+  // }
 ];
 
 export const JOBS: Job[] = [
@@ -78,31 +80,37 @@ export const JOBS: Job[] = [
 
 export const SERVICES: Service[] = [
   {
+    id: 'virtual-consulting',
     title: 'Virtual Consulting',
     description: 'Connect with certified diabetes educators from the comfort of your home.',
     iconName: 'MonitorSmartphone'
   },
   {
+    id: 'continuous-monitoring',
     title: 'Continuous Monitoring',
     description: 'Real-time data tracking and health alerts integrated with our devices.',
     iconName: 'Activity'
   },
   {
+    id: 'patient-education',
     title: 'Patient Education',
     description: 'Comprehensive library of resources, webinars, and guides for self-care.',
     iconName: 'Users'
   },
   {
+    id: 'secure-database',
     title: 'Secure Medical Database',
     description: 'High-profile encrypted health records for seamless global access by authorized specialists.',
     iconName: 'Database'
   },
   {
+    id: 'experimental-therapeutics',
     title: 'Experimental Therapeutics',
     description: 'Exclusive access to clinical trials and next-generation biotech solutions for eligible patients.',
     iconName: 'TestTube'
   },
   {
+    id: 'executive-health',
     title: 'Executive Health Suite',
     description: 'Concierge medical services designed for high-profile clients requiring privacy and speed.',
     iconName: 'Crown'

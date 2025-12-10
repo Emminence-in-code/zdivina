@@ -9,8 +9,8 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/#about' },
-    { name: 'Products', path: '/products' },
     { name: 'Services', path: '/#services' },
+    { name: 'Products', path: '/products' },
     { name: 'Careers', path: '/careers' },
     { name: 'Contact', path: '/#contact' },
   ];
@@ -107,7 +107,7 @@ export const Footer: React.FC = () => {
               <SocialIcon href="https://facebook.com" icon={<Facebook className="h-4 w-4" />} />
               <SocialIcon href="https://twitter.com" icon={<Twitter className="h-4 w-4" />} />
               <SocialIcon href="https://linkedin.com" icon={<Linkedin className="h-4 w-4" />} />
-              <SocialIcon href="https://instagram.com" icon={<Instagram className="h-4 w-4" />} />
+              <SocialIcon href="https://www.instagram.com/divinahealthcare?igsh=NjRrOXQ3cGE4cDcy" icon={<Instagram className="h-4 w-4" />} />
             </div>
           </div>
           

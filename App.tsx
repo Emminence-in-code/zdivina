@@ -4,6 +4,7 @@ import { Navbar, Footer } from './components/Layout';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Careers from './pages/Careers';
+import ServiceDetail from './pages/services/[id]';
 
 const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
@@ -36,6 +37,8 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/services/:id" element={<ServiceDetail />} />
+
           </Routes>
         </main>
         <Footer />

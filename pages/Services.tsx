@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SERVICES } from '../constants';
 import { MonitorSmartphone, Activity, Users, Database, TestTube, Crown, FileText, CreditCard, Shield } from 'lucide-react';
 
@@ -11,6 +12,8 @@ const Services: React.FC = () => {
     'TestTube': TestTube,
     'Crown': Crown
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white min-h-screen">
@@ -28,14 +31,17 @@ const Services: React.FC = () => {
              {SERVICES.map((service, index) => {
                 const Icon = iconMap[service.iconName] || Users;
                 return (
-                  <div key={index} className="bg-white border border-slate-100 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 hover:-translate-y-1">
+                  <div key={service.id} className="bg-white border border-slate-100 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition duration-300 hover:-translate-y-1 flex flex-col">
                       <div className="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mb-6">
                          <Icon className="w-8 h-8 text-primary-600" />
                       </div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-4">{service.title}</h3>
-                      <p className="text-slate-600 leading-relaxed mb-6">{service.description}</p>
-                      <button className="text-primary-600 font-bold hover:text-primary-700 flex items-center">
-                         Learn More &rarr;
+                      <p className="text-slate-600 leading-relaxed mb-6 flex-grow">{service.description}</p>
+                      <button 
+                        onClick={() => navigate(`/services/${service.id}`)}
+                        className="text-primary-600 font-bold hover:text-primary-700 flex items-center self-start mt-auto"
+                      >
+                        Learn More &rarr;
                       </button>
                   </div>
                 );

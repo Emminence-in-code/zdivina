@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { JOBS } from '../constants';
 import { Globe, Coffee, Wifi, Briefcase, ArrowRight, Upload } from 'lucide-react';
+import JobApplicationModal from '../components/JobApplicationModal';
 
 const Careers: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     coverLetter: ''
   });
+  
+  const openApplicationModal = (jobTitle: string) => {
+    setSelectedJob(jobTitle);
+    setIsModalOpen(true);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -103,8 +111,11 @@ const Careers: React.FC = () => {
                      </div>
                      <p className="mt-3 text-slate-600 max-w-2xl">{job.description}</p>
                   </div>
-                  <button className="mt-4 md:mt-0 bg-slate-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-600 transition flex items-center whitespace-nowrap">
-                     Apply Now <ArrowRight className="ml-2 w-4 h-4" />
+                  <button 
+                    onClick={() => openApplicationModal(job.title)}
+                    className="mt-4 md:mt-0 bg-slate-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-600 transition flex items-center whitespace-nowrap"
+                  >
+                    Apply Now <ArrowRight className="ml-2 w-4 h-4" />
                   </button>
                </div>
             ))}
@@ -183,6 +194,13 @@ const Careers: React.FC = () => {
             </form>
          </div>
       </div>
+      
+      {/* Job Application Modal */}
+      <JobApplicationModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        jobTitle={selectedJob}
+      />
     </div>
   );
 };
