@@ -1,6 +1,6 @@
 import React, { useState, useRef, FormEvent } from 'react';
 import { FAQS } from '../constants';
-import { Mail, Phone, MapPin, Clock, Plus, Minus, Send } from 'lucide-react';
+import { Mail, Clock, Plus, Minus, Send, Linkedin, Instagram } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 
 const Contact: React.FC = () => {
@@ -156,16 +156,6 @@ formRef.current.appendChild(timestampInput);
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start space-x-4 group hover:border-primary-200 transition">
                 <div className="bg-primary-100 p-3 rounded-full text-primary-600 group-hover:scale-110 transition-transform">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900">Phone</h3>
-                  <a href="tel:09023265024" className="text-slate-600 mt-1 hover:text-primary-600 transition block">09023265024</a>
-                  <p className="text-xs text-slate-400 mt-1">Mon-Fri, 9am-6pm EST</p>
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start space-x-4 group hover:border-primary-200 transition">
-                <div className="bg-primary-100 p-3 rounded-full text-primary-600 group-hover:scale-110 transition-transform">
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
@@ -174,14 +164,38 @@ formRef.current.appendChild(timestampInput);
                   <p className="text-xs text-slate-400 mt-1">24/7 Response</p>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start space-x-4 sm:col-span-2">
-                <div className="bg-primary-100 p-3 rounded-full text-primary-600">
-                  <MapPin className="w-6 h-6" />
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start space-x-4 group hover:border-primary-200 transition">
+                <div className="bg-primary-100 p-3 rounded-full text-primary-600 group-hover:scale-110 transition-transform">
+                  <Linkedin className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Headquarters</h3>
-                  <p className="text-slate-600 mt-1">100 Innovation Way, Tech Park</p>
-                  <p className="text-slate-600">San Francisco, CA 94107, USA</p>
+                  <h3 className="font-bold text-slate-900">LinkedIn</h3>
+                  <a
+                    href="https://www.linkedin.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-slate-600 mt-1 hover:text-primary-600 transition block break-all"
+                  >
+                    Connect with us on LinkedIn
+                  </a>
+                  <p className="text-xs text-slate-400 mt-1">Company updates & careers</p>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start space-x-4 sm:col-span-2 group hover:border-primary-200 transition">
+                <div className="bg-primary-100 p-3 rounded-full text-primary-600 group-hover:scale-110 transition-transform">
+                  <Instagram className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900">Instagram</h3>
+                  <a
+                    href="https://www.instagram.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-slate-600 mt-1 hover:text-primary-600 transition block break-all"
+                  >
+                    Follow us on Instagram
+                  </a>
+                  <p className="text-xs text-slate-400 mt-1">Stories from patients & partners</p>
                 </div>
               </div>
             </div>

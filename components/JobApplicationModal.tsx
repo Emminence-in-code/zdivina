@@ -1,7 +1,7 @@
 import React, { useState, useRef, FormEvent } from 'react';
 import { X, Send, FileText, User, Mail, Briefcase, Loader2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
-import { uploadFile } from 'cocobase';
+// import {  } from 'cocobase';
 import { db } from '../lib/cocobase';
 
 interface JobApplicationModalProps {
@@ -19,126 +19,119 @@ const JobApplicationModal: React.FC<JobApplicationModalProps> = ({ isOpen, onClo
   if (!isOpen) return null;
 
   const uploadToFileIo = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
+    // Upload file to Cocobase and return the CV link stored in the cv field
+    const response: any = await db.createDocumentWithFiles('cv', { name: 'Job Application CV' }, { cv: file });
 
-
-  const response = await uploadFile(db,file );
-    if (!response.url) {
+    if (!response || !response.data || !response.data.cv) {
       throw new Error("Failed to upload file to Cocobase");
     }
 
-
-
-    return (response.url) as string;
+    const cvUrl = String(response.data.cv);
+    return cvUrl;
   };
 
-const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
 
-  if (!formRef.current) return;
+    if (!formRef.current) return;
 
-  // 1) Add timestamp and job title as hidden inputs
-  const now = new Date();
-  const formattedDate = now.toLocaleString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
+    const formEl = formRef.current;
 
-  const formEl = formRef.current;
+    if (jobTitle) {
+      const jobTitleInput = document.createElement("input");
+      jobTitleInput.type = "hidden";
+      jobTitleInput.name = "job_title";
+      jobTitleInput.value = jobTitle;
+      formEl.appendChild(jobTitleInput);
+    }
 
-  const timestampInput = document.createElement("input");
-  timestampInput.type = "hidden";
-  timestampInput.name = "timestamp";
-  timestampInput.value = formattedDate;
-  formEl.appendChild(timestampInput);
+    setIsSubmitting(true);
+    setSubmitStatus(null);
 
-  if (jobTitle) {
-    const jobTitleInput = document.createElement("input");
-    jobTitleInput.type = "hidden";
-    jobTitleInput.name = "job_title";
-    jobTitleInput.value = jobTitle;
-    formEl.appendChild(jobTitleInput);
-  }
+    // 2) Upload CV to Cocobase and include the link in the cover letter
+    let cvLink: string | null = null;
+    if (resumeFile) {
+      try {
+        cvLink = await uploadToFileIo(resumeFile);
+      } catch (error) {
+        console.error("Error uploading file to Cocobase:", error);
+        setSubmitStatus({
+          success: false,
+          message:
+            "Failed to upload your CV. Please try again or email us directly with your attachment.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
-  setIsSubmitting(true);
-  setSubmitStatus(null);
+    // Get the existing cover_letter field value
+    const coverLetterField = (formEl.elements.namedItem(
+      "cover_letter",
+    ) as HTMLTextAreaElement | null);
 
-  // 2) Upload CV to file.io and include the link in the cover letter
-  let cvLink: string | null = null;
-  if (resumeFile) {
+    const fullMessage = coverLetterField?.value || "";
+
+    // Expose CV link and resume file name as separate fields for EmailJS templates
+    if (cvLink) {
+      const cvLinkInput = document.createElement("input");
+      cvLinkInput.type = "hidden";
+      cvLinkInput.name = "cv_link";
+      cvLinkInput.value = cvLink;
+      formEl.appendChild(cvLinkInput);
+    }
+
+    if (resumeFile && resumeFile.name) {
+      const resumeNameInput = document.createElement("input");
+      resumeNameInput.type = "hidden";
+      resumeNameInput.name = "resume_file_name";
+      resumeNameInput.value = resumeFile.name;
+      formEl.appendChild(resumeNameInput);
+    }
+
+    if (coverLetterField) {
+      coverLetterField.value = fullMessage;
+    } else {
+      // Fallback: inject hidden field if cover_letter is not a visible textarea
+      const coverLetterInput = document.createElement("input");
+      coverLetterInput.type = "hidden";
+      coverLetterInput.name = "cover_letter";
+      coverLetterInput.value = fullMessage;
+      formEl.appendChild(coverLetterInput);
+    }
+
     try {
-      cvLink = await uploadToFileIo(resumeFile);
+      await emailjs.sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        "template_qwaepkc",
+        formEl,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+      );
+
+      setSubmitStatus({
+        success: true,
+        message:
+          "Application submitted successfully! We'll review your application and get back to you soon.",
+      });
+      formEl.reset();
+      setResumeFile(null);
     } catch (error) {
-      console.error("Error uploading file to file.io:", error);
+      console.error("Failed to submit application:", error);
       setSubmitStatus({
         success: false,
         message:
-          "Failed to upload your CV. Please try again or email us directly with your attachment.",
+          "Failed to submit application. Please try again or email us directly at careers@divina.com",
       });
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-  }
+  };
 
-  // Get the existing cover_letter field value
-  const coverLetterField = (formEl.elements.namedItem(
-    "cover_letter",
-  ) as HTMLTextAreaElement | null);
-
-  const baseCoverLetter = coverLetterField?.value || "";
-
-  const fullMessage = cvLink
-    ? `${baseCoverLetter}\n\n---\nCV link: ${cvLink}`
-    : baseCoverLetter;
-
-  if (coverLetterField) {
-    coverLetterField.value = fullMessage;
-  } else {
-    // Fallback: inject hidden field if cover_letter is not a visible textarea
-    const coverLetterInput = document.createElement("input");
-    coverLetterInput.type = "hidden";
-    coverLetterInput.name = "cover_letter";
-    coverLetterInput.value = fullMessage;
-    formEl.appendChild(coverLetterInput);
-  }
-
-  try {
-    await emailjs.sendForm(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      "template_qwaepkc",
-      formEl,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
-    );
-
-    setSubmitStatus({
-      success: true,
-      message:
-        "Application submitted successfully! We'll review your application and get back to you soon.",
-    });
-    formEl.reset();
-    setResumeFile(null);
-  } catch (error) {
-    console.error("Failed to submit application:", error);
-    setSubmitStatus({
-      success: false,
-      message:
-        "Failed to submit application. Please try again or email us directly at careers@divina.com",
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files[0]) {
-    setResumeFile(e.target.files[0]);
-  }
-};
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setResumeFile(e.target.files[0]);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -255,7 +248,6 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   </span>
                   <input
                     id="resume"
-                    name="resume"
                     type="file"
                     accept=".pdf,.doc,.docx"
                     onChange={handleFileChange}

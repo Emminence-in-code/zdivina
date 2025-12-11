@@ -104,9 +104,6 @@ export const Footer: React.FC = () => {
               Empowering patients worldwide with innovative diabetes care solutions and providing flexible, remote career opportunities for healthcare professionals.
             </p>
             <div className="flex space-x-4">
-              <SocialIcon href="https://facebook.com" icon={<Facebook className="h-4 w-4" />} />
-              <SocialIcon href="https://twitter.com" icon={<Twitter className="h-4 w-4" />} />
-              <SocialIcon href="https://linkedin.com" icon={<Linkedin className="h-4 w-4" />} />
               <SocialIcon href="https://www.instagram.com/divinahealthcare?igsh=NjRrOXQ3cGE4cDcy" icon={<Instagram className="h-4 w-4" />} />
             </div>
           </div>
@@ -139,14 +136,6 @@ export const Footer: React.FC = () => {
                <li className="flex items-start">
                  <span className="text-primary-500 mr-3 font-bold">@</span>
                  <a href="mailto:DivinaHealthcare@outlook.com" className="hover:text-white transition">DivinaHealthcare@outlook.com</a>
-               </li>
-               <li className="flex items-start">
-                 <span className="text-primary-500 mr-3 font-bold">#</span>
-                 <a href="tel:09023265024" className="hover:text-white transition">09023265024</a>
-               </li>
-               <li className="flex items-start">
-                 <span className="text-primary-500 mr-3 font-bold">A</span>
-                 <span>100 Innovation Way, Tech Park<br/>San Francisco, CA 94107</span>
                </li>
             </ul>
           </div>
